@@ -10,29 +10,29 @@ public class Server {
             System.out.println("Server is listening on port " + port);
 
             while (true) {
-                Socket clientSocket = serverSocket.accept();
-                System.out.println("New connection accepted");
+                try (Socket clientSocket = serverSocket.accept();
+                     BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                     PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true)) {
 
-                BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+                    System.out.println("New connection accepted");
 
-                out.println("Write your name:");
-                String name = in.readLine();
-                System.out.println("Received name: " + name);
+                    out.println("Write your name:");
+                    String name = in.readLine();
+                    System.out.println("Received name: " + name);
 
-                out.println("Are you a child? (yes/no)");
-                String isChild = in.readLine();
-                System.out.println("Received answer: " + isChild);
+                    out.println("Are you a child? (yes/no)");
+                    String isChild = in.readLine();
+                    System.out.println("Received answer: " + isChild);
 
-                if ("yes".equalsIgnoreCase(isChild)) {
-                    out.println(String.format("Welcome to the kids area, %s! Let's play!", name));
-                } else {
-                    out.println(String.format("Welcome to the adult zone, %s! Have a good rest, or a good working day!", name));
+                    if ("yes".equalsIgnoreCase(isChild)) {
+                        out.println(String.format("Welcome to the kids area, %s! Let's play!", name));
+                    } else {
+                        out.println(String.format("Welcome to the adult zone, %s! Have a good rest, or a good working day!", name));
+                    }
+                } catch (IOException ex) {
+                    System.out.println("Client handling exception: " + ex.getMessage());
+                    ex.printStackTrace();
                 }
-
-                in.close();
-                out.close();
-                clientSocket.close();
             }
         } catch (IOException ex) {
             System.out.println("Server exception: " + ex.getMessage());
