@@ -8,10 +8,11 @@ public class Client {
         String hostname = "netology.homework";
         int port = 8080;
 
-        try (Socket socket = new Socket(hostname, port)) {
+        try (Socket socket = new Socket(hostname, port);
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-            BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
+            BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in))
+        ) {
 
             // Читаем запрос имени от сервера
             System.out.println(in.readLine());
